@@ -6,8 +6,8 @@ if EntityManagement == nil then
 end
 
 
-EntityManagement['version'] = '0.002'
-EntityManagement['github'] = ''
+EntityManagement['version'] = '0.003'
+EntityManagement['github'] = 'https://github.com/CrAzD/DotaEntityManager'
 EntityManagement['description'] = 'An entity management library.'
 print('\n\tEntityManagement:  '..EntityManagement['description']..'\n\t\tVersion:  '..EntityManagement['version']..'\n\t\tGithub URL:  '..EntityManagement['github']..'\n\t\tLibrary Initialized.')
 
@@ -183,4 +183,8 @@ end
 function EntityManagement:EntityDestroy(entity)
 	entity:Destroy()
 	entity.owners.player.entities['positionInPlayerEntityList'] = nil
+end
+
+
+function EntityManagement:AddAbility(entity, ability)
 end
