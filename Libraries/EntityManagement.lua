@@ -6,7 +6,7 @@ if EntityManagement == nil then
 end
 
 
-EntityManagement['version'] = '0.001'
+EntityManagement['version'] = '0.002'
 EntityManagement['github'] = ''
 EntityManagement['description'] = 'An entity management library.'
 print('\n\tEntityManagement:  '..EntityManagement['description']..'\n\t\tVersion:  '..EntityManagement['version']..'\n\t\tGithub URL:  '..EntityManagement['github']..'\n\t\tLibrary Initialized.')
@@ -100,7 +100,7 @@ end
 function EntityManagement:UnitConfiguration(entity, player)
 	entity['isHero'] = entity['isHero'] or false
 	entity['isBuilding'] = entity['isBuilding'] or false
-	entity['type'] = 'entity'
+	entity['type'] = entity['type'] or 'unit'
 	entity['id'] = entity['id'] or entity:GetOwner:GetPlayerID()
 	entity['name'] = entity['name'] or entity:GetentityName()
 	entity['team'] = entity['team'] or entity:GetTeam()
@@ -171,9 +171,16 @@ function EntityManagement:UnitConfiguration(entity, player)
 	entity:SetHullRadius(entity['hullRadius'])
 	entity:SetControllableByPlayer(entity['id'], true)
 
+	entity['positionInPlayerEntityList'] = #player['entities']
 	entity['isConfigured'] = true
 
-	player['entities'][#player['entities']] = entity
+	player['entities'][entity['positionInPlayerEntityList']] = entity
 
 	return(entity)
+end
+
+
+function EntityManagement:EntityDestroy(entity)
+	entity:Destroy()
+	entity.owners.player.entities['positionInPlayerEntityList'] = nil
 end
