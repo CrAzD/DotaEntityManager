@@ -6,7 +6,7 @@ if EntityManagement == nil then
 end
 
 
-EntityManagement['version'] = '0.004'
+EntityManagement['version'] = '0.005'
 EntityManagement['github'] = 'https://github.com/CrAzD/DotaEntityManager'
 EntityManagement['description'] = 'An entity management library.'
 print('\n\tEntityManagement:  '..EntityManagement['description']..'\n\t\tVersion:  '..EntityManagement['version']..'\n\t\tGithub URL:  '..EntityManagement['github']..'\n\t\tLibrary Initialized.')
@@ -69,7 +69,7 @@ function EntityManagement:CreateEntity(entity, player) -- EntityManagement:Creat
 			unit['owners'] = {['entity'] = entity['handle'], ['player'] = player}
 			unit['unitType'] = entity['type']
 
-			return(EntityManagement:UnitConfiguration(unit, player))	
+			return(EntityManagement:EntityConfiguration(unit, player))	
 		elseif string.find(entity['type'], 'dummy']) then
 			return(CreateUnitByName(entity['name'], entity['spawnCords'], false, player['handle'], player, entity['team']))		
 		elseif string.find(entity['type'], 'tavern']) then
@@ -97,7 +97,7 @@ function EntityManagement:CreateEntity(entity, player) -- EntityManagement:Creat
 end
 
 
-function EntityManagement:UnitConfiguration(entity, player)
+function EntityManagement:EntityConfiguration(entity, player)
 	entity['isHero'] = entity['isHero'] or false
 	entity['isBuilding'] = entity['isBuilding'] or false
 	entity['type'] = entity['type'] or 'unit'
@@ -196,6 +196,15 @@ function EntityManagement:EntityDestroy(entity)
 end
 
 
+function EntityManagement:HeroReplace(entityNewName, player)
+	local unit = PlayerResource:ReplaceHeroWith(player['id'], entityNewName, 0, 0)
+	unit['isHero'] = true
+	unit['unitType'] = 'hero'
+
+	return(EntityManagement:EntityConfiguration(unit, player))
+end
+
+
 function EntityManagement:AbilityAdd(entity, abilityName)
 	if type(entity) ~= 'table' then
 		print('[ENTITY MANAGEMENT]  entity argument must be a table.')
@@ -206,26 +215,32 @@ function EntityManagement:AbilityAdd(entity, abilityName)
 
 		return(false)
 	else
-		entity:AddAbility(abilityName)
-		local abi = entity:FindAbilityByName(abilityName)
-		if type(abi) ~= 'table' then
-			print('[ENTITY MANAGEMENT]  abilityName not found, make sure you typed the ability name correctly and that it exists.')
+		if not entity['ability'] then
+			print('[ENTITY MANAGEMENT]  you\'re trying to add an ability to an entity that has not yet been configured.')
 
 			return(false)
 		else
-			entity.ability['count'] = entity.ability['count'] + 1
+			entity:AddAbility(abilityName)
+			local abi = entity:FindAbilityByName(abilityName)
+			if type(abi) ~= 'table' then
+				print('[ENTITY MANAGEMENT]  abilityName not found, make sure you typed the ability name correctly and that it exists.')
 
-			abi:SetLevel(1)
-			abi['cost'] = abi:GetGoldCost(-1)
-			abi['name'] = abi:GetAbilityName()
-			abi['caster'] = entity
-			abi['position'] = entity.ability['count']
+				return(false)
+			else
+				entity.ability['count'] = entity.ability['count'] + 1
 
-			entity.ability[entity.ability['count']] = abi
-			entity.ability[abi['name']] = abi
-			entity.ability.list[entity.ability['count']] = abi
+				abi:SetLevel(1)
+				abi['cost'] = abi:GetGoldCost(-1)
+				abi['name'] = abi:GetAbilityName()
+				abi['caster'] = entity
+				abi['position'] = entity.ability['count']
 
-			return(true)
+				entity.ability[entity.ability['count']] = abi
+				entity.ability[abi['name']] = abi
+				entity.ability.list[entity.ability['count']] = abi
+
+				return(true)
+			end
 		end
 	end
 end
@@ -244,34 +259,40 @@ function EntityManagement:AbilityReplace(entity, abilityOld, abilityNew)
 		print('[ENTITY MANAGEMENT]  abilityNew argument must be a string.')
 
 		return(false)
-	end
-
-	entity:AddAbility(abilityNew)
-	local old = entity.ability[abilityOld]
-	local abi = entity:FindAbilityByName(abilityNew)
-	if type(abi) ~= 'table' then
-		print('[ENTITY MANAGEMENT]  abilityNew not found, make sure you typed the ability name correctly and that it exists.')
-
-		return(false)
-	elseif type(old) ~= 'table' then
-		print('[ENTITY MANAGEMENT]  abilityOld not found, make sure you typed the ability name you want to replace correctly.')
-
-		return(false)
 	else
-		abi:SetLevel(1)
-		abi['cost'] = abi:GetGoldCost(-1)
-		abi['name'] = abilityNew
-		abi['caster'] = entity
-		abi['position'] = old['position']
+		if not entity['ability'] then
+			print('[ENTITY MANAGEMENT]  you\'re trying to replace an ability on an entity that has not been configured first.')
 
-		entity.ability[abi['position']] = abi
-		entity.ability[abilityNew] = abi
-		entity.ability.list[abi['position']] = abi
+			return(false)
+		else
+			entity:AddAbility(abilityNew)
+			local old = entity.ability[abilityOld]
+			local abi = entity:FindAbilityByName(abilityNew)
+			if type(abi) ~= 'table' then
+				print('[ENTITY MANAGEMENT]  abilityNew not found, make sure you typed the ability name correctly and that it exists.')
 
-		entity:RemoveAbility(abilityOld)
-		entity.ability[abilityOld] = nil
+				return(false)
+			elseif type(old) ~= 'table' then
+				print('[ENTITY MANAGEMENT]  abilityOld not found, make sure you typed the ability name you want to replace correctly.')
 
-		return(true)
+				return(false)
+			else
+				abi:SetLevel(1)
+				abi['cost'] = abi:GetGoldCost(-1)
+				abi['name'] = abilityNew
+				abi['caster'] = entity
+				abi['position'] = old['position']
+
+				entity.ability[abi['position']] = abi
+				entity.ability[abilityNew] = abi
+				entity.ability.list[abi['position']] = abi
+
+				entity:RemoveAbility(abilityOld)
+				entity.ability[abilityOld] = nil
+
+				return(true)
+			end
+		end
 	end
 end
 
@@ -286,22 +307,28 @@ function EntityManagement:AbilityRemove(entity, abilityName)
 
 		return(false)
 	else
-		local abi = entity.ability[abilityName]
-		if type(abi) ~= 'table' then
-			print('[ENTITY MANAGEMENT]  abilityNew not found, make sure you typed the ability name correctly and that it exists.')
+		if not entity['ability'] then
+			print('[ENTITY MANAGEMENT]  you\'re trying to remove an ability from an entity that has not yet been configured.')
 
 			return(false)
 		else
-			local position = abi['position']
+			local abi = entity.ability[abilityName]
+			if type(abi) ~= 'table' then
+				print('[ENTITY MANAGEMENT]  abilityNew not found, make sure you typed the ability name correctly and that it exists.')
 
-			entity:RemoveAbility(abilityName)
+				return(false)
+			else
+				local position = abi['position']
 
-			entity.ability[position] = nil
-			entity.ability[abilityName] = nil
-			entity.ability.list[position] = nil
-			entity.ability['count'] = entity.ability['count'] - 1
+				entity:RemoveAbility(abilityName)
 
-			return(true)
+				entity.ability[position] = nil
+				entity.ability[abilityName] = nil
+				entity.ability.list[position] = nil
+				entity.ability['count'] = entity.ability['count'] - 1
+
+				return(true)
+			end
 		end
 	end
 end
