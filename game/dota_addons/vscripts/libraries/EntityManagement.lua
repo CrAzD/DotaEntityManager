@@ -6,7 +6,7 @@ if EntityManagement == nil then
 end
 
 
-EntityManagement['version'] = '0.006'
+EntityManagement['version'] = '0.007'
 EntityManagement['github'] = 'https://github.com/CrAzD/DotaEntityManager'
 EntityManagement['description'] = 'An entity management library.'
 print('\n\tEntityManagement:  '..EntityManagement['description']..'\n\t\tVersion:  '..EntityManagement['version']..'\n\t\tGithub URL:  '..EntityManagement['github']..'\n\t\tLibrary Initialized.')
@@ -31,6 +31,25 @@ end
 function EntityManagement:OnEntityKilled(data)
 	local killed = EntIndexToHScript(data['entindex_killed'])
 	local attacker = EntIndexToHScript(data['entindex_attacker']) or nil
+end
+
+
+function EntityManagement:OnPlayerPickHero(data)
+	local player = EntityManagement:SetupPlayer(data['player'])
+	if player == nil then
+		return
+	else
+		local unit = EntIndexToHScript(data['heroindex'])
+		if player['hero'] == nil then
+			if unit['name'] ~= nil and unit['name'] ~= 'npc_dota_hero_wisp' then
+				player['hero'] = unit
+			end
+		end
+
+		if player['team'] == 3 and GameMode and GameMode['TITAN'] == nil then
+			GameMode['TITAN'] = unit
+		end
+	end
 end
 
 
@@ -333,4 +352,46 @@ function EntityManagement:AbilityRemove(entity, abilityName)
 			end
 		end
 	end
+end
+
+
+function EntityManagement:SetupPlayer(playerID)
+	if type(player) ~= 'integer' then
+		print('[ENTITY MANAGEMENT]  player argument must be an integer.')
+
+		return(nil)
+	end
+
+	local player = EntIndexToHScript(playerID)
+	if player['isConfigured'] == true then
+		return(player)
+	else
+		player['id'] = playerID
+		player['queue'] = {}
+		player['units'] = {}
+		player['structures'] = {}
+		player['buildings'] = {}
+		player['upgrades'] = {}
+		player['gold'] = 0
+		player['lumber'] = 0
+		player['population'] = {['current'] = 0, ['maximum'] = 150}
+		player['team'] = PlayerResource:GetTeam(player['id'])
+		player['handle'] = PlayerResource:GetPlayer(player['id'])
+		player['name'] = PlayerResource:GetPlayerName(player['id'])
+
+		if player['team'] == 2 then
+			player['faction'] = 'builder'
+		elseif player['team'] == 3 then
+			player['faction'] = 'titan'
+		end
+
+		player['isConfigured'] = true
+
+		if GameMode and GameMode.PLAYERS then
+			GameMode.Players[player['id']] = player
+		end
+	end
+
+
+	return(player)
 end
