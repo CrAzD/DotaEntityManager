@@ -6,7 +6,7 @@ if EntityManagement == nil then
 end
 
 
-EntityManagement['version'] = '0.005'
+EntityManagement['version'] = '0.006'
 EntityManagement['github'] = 'https://github.com/CrAzD/DotaEntityManager'
 EntityManagement['description'] = 'An entity management library.'
 print('\n\tEntityManagement:  '..EntityManagement['description']..'\n\t\tVersion:  '..EntityManagement['version']..'\n\t\tGithub URL:  '..EntityManagement['github']..'\n\t\tLibrary Initialized.')
@@ -37,7 +37,7 @@ end
 --[[------------------------------------------------------------------------------
 	FUNCTIONS
 ------------------------------------------------------------------------------]]--
-function EntityManagement:CreateEntity(entity, player) -- EntityManagement:CreateEntity({['name']='npc_dota_hero_wisp', ['team']=2, ['spawnCords']=Vector(0, 0, 0)}, {})
+function EntityManagement:CreateEntity(entity, player)
 	if type(entity) ~= 'table' then
 		print('[ENTITY MANAGEMENT]  entity argument must be a table.')
 
@@ -105,7 +105,7 @@ function EntityManagement:EntityConfiguration(entity, player)
 	entity['name'] = entity['name'] or entity:GetentityName()
 	entity['team'] = entity['team'] or entity:GetTeam()
 	entity['handle'] = entity['handle'] or entity:GetEntityHandle()
-	entity['hullRadius'] = entity['hullRadius']
+	entity['hullRadius'] = entity['hullRadius'] or entity:GetHullRadius()
 	entity['index'] = entity['index'] or entity:GetEntityIndex()
 	entity['original'] = {['id'] = entity['id'], ['player'] = player}
 	entity['vector'] = entity['vector'] or entity:GetAbsOrigin()
@@ -171,10 +171,12 @@ function EntityManagement:EntityConfiguration(entity, player)
 	entity:SetHullRadius(entity['hullRadius'])
 	entity:SetControllableByPlayer(entity['id'], true)
 
-	entity['positionInPlayerEntityList'] = #player['entities']
-	entity['isConfigured'] = true
+	if type(player['entities']) == 'table' then
+		entity['positionInPlayerEntityList'] = #player['entities']
+		player['entities'][entity['positionInPlayerEntityList']] = entity
+	end
 
-	player['entities'][entity['positionInPlayerEntityList']] = entity
+	entity['isConfigured'] = true
 
 	return(entity)
 end
