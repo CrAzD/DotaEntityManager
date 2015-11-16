@@ -6,10 +6,10 @@ if EntityManagement == nil then
 end
 
 
-EntityManagement['version'] = '0.007'
+EntityManagement['version'] = '0.008'
 EntityManagement['github'] = 'https://github.com/CrAzD/DotaEntityManager'
 EntityManagement['description'] = 'An entity management library.'
-print('\n\tEntityManagement:  '..EntityManagement['description']..'\n\t\tVersion:  '..EntityManagement['version']..'\n\t\tGithub URL:  '..EntityManagement['github']..'\n\t\tLibrary Initialized.')
+print('\n\tEntityManagement:  '..EntityManagement['description']..'\n\t\tVersion:  '..EntityManagement['version']..'\n\t\tGithub URL:  '..EntityManagement['github']..'\n\t\tLibrary Initialized.\n')
 
 
 ListenToGameEvent('npc_spawned', Dynamic_Wrap(EntityManagement, 'OnNpcSpawned'), EntityManagement)
@@ -82,16 +82,16 @@ function EntityManagement:CreateEntity(entity, player)
 
 		return(nil)
 	else
-		if string.find(entity['type'], 'unit']) then
+		if string.find(entity['type'], 'unit') then
 			local unit = CreateUnitByName(entity['name'], entity['spawnCords'], true, entity['handle'], player, entity['team'])
 
 			unit['owners'] = {['entity'] = entity['handle'], ['player'] = player}
 			unit['unitType'] = entity['type']
 
 			return(EntityManagement:EntityConfiguration(unit, player))	
-		elseif string.find(entity['type'], 'dummy']) then
+		elseif string.find(entity['type'], 'dummy') then
 			return(CreateUnitByName(entity['name'], entity['spawnCords'], false, player['handle'], player, entity['team']))		
-		elseif string.find(entity['type'], 'tavern']) then
+		elseif string.find(entity['type'], 'tavern') then
 			local unit = CreateUnitByName(entity['name'], entity['spawnCords'], true, player['handle'], player, entity['team'])
 			unit:SetAbilityPoints(0)
 
@@ -120,8 +120,8 @@ function EntityManagement:EntityConfiguration(entity, player)
 	entity['isHero'] = entity['isHero'] or false
 	entity['isBuilding'] = entity['isBuilding'] or false
 	entity['type'] = entity['type'] or 'unit'
-	entity['id'] = entity['id'] or entity:GetOwner:GetPlayerID()
-	entity['name'] = entity['name'] or entity:GetentityName()
+	entity['id'] = entity['id'] or entity:GetOwner():GetPlayerID()
+	entity['name'] = entity['name'] or entity:GetUnitName()
 	entity['team'] = entity['team'] or entity:GetTeam()
 	entity['handle'] = entity['handle'] or entity:GetEntityHandle()
 	entity['hullRadius'] = entity['hullRadius'] or entity:GetHullRadius()
@@ -143,7 +143,7 @@ function EntityManagement:EntityConfiguration(entity, player)
 		entity['teamName'] = 'titan'
 	end
 
-	entity['ability'] = {'list'] = {}, ['count'] = -1}
+	entity['ability'] = {['list'] = {}, ['count'] = -1}
 	for i=0, 15 do
 		local abi = entity:GetAbilityByIndex(i)
 		if type(abi) == 'table' then
@@ -391,7 +391,6 @@ function EntityManagement:SetupPlayer(playerID)
 			GameMode.Players[player['id']] = player
 		end
 	end
-
 
 	return(player)
 end
