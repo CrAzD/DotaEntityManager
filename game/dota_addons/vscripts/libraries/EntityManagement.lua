@@ -6,7 +6,7 @@ if EntityManagement == nil then
 end
 
 
-EntityManagement['version'] = '0.008'
+EntityManagement['version'] = '0.009'
 EntityManagement['github'] = 'https://github.com/CrAzD/DotaEntityManager'
 EntityManagement['description'] = 'An entity management library.'
 print('\n\tEntityManagement:  '..EntityManagement['description']..'\n\t\tVersion:  '..EntityManagement['version']..'\n\t\tGithub URL:  '..EntityManagement['github']..'\n\t\tLibrary Initialized.\n')
@@ -174,6 +174,12 @@ function EntityManagement:EntityConfiguration(entity, player)
 	if string.find(entity['unitType'], 'building') then
 		entity['isBuilding'] = true
 		entity['construction'] = {}
+
+		entity:SetModelScale(0.5)
+
+		if FindUnitLabel(entity, 'CanQueue') then
+			BuildingQueue:InitializeBuildingEntity(entity)
+		end
 	end
 
 	if string.find(entity['unitType'], 'peasant') then
