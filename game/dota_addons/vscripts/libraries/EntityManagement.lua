@@ -6,7 +6,7 @@ if EntityManagement == nil then
 end
 
 
-EntityManagement['version'] = '0.010'
+EntityManagement['version'] = '0.011'
 EntityManagement['github'] = 'https://github.com/CrAzD/DotaEntityManager'
 EntityManagement['description'] = 'An entity management library.'
 print('\n\tEntityManagement:  '..EntityManagement['description']..'\n\t\tVersion:  '..EntityManagement['version']..'\n\t\tGithub URL:  '..EntityManagement['github']..'\n\t\tLibrary Initialized.\n')
@@ -14,6 +14,7 @@ print('\n\tEntityManagement:  '..EntityManagement['description']..'\n\t\tVersion
 
 ListenToGameEvent('npc_spawned', Dynamic_Wrap(EntityManagement, 'OnNpcSpawned'), EntityManagement)
 ListenToGameEvent('entity_killed', Dynamic_Wrap(EntityManagement, 'OnEntityKilled'), EntityManagement)
+ListenToGameEvent('dota_player_pick_hero', Dynamic_Wrap(EntityManagement, 'OnPlayerPickHero'), EntityManagement)
 
 
 
