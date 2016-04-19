@@ -15,7 +15,7 @@ function EntityManager:EntityConfigure(entity, player)
 	entity['originalPlayer'] = entity['owningPlayer']
 
 	entity['isUnit'] = entity['isUnit'] or false
-	entity['isHero'] = entity['isHero'] or entity:HsHero()
+	entity['isHero'] = entity['isHero'] or entity:IsHero()
 	entity['isBuilding'] = entity['isBuilding'] or entity:IsBuilding()
 	entity['type'] = entity['type'] or 'unit'
 	entity['abilityPoints'] = entity['abilityPoints'] or 0
@@ -36,8 +36,8 @@ function EntityManager:EntityConfigure(entity, player)
 		['count'] = -1
 	}
 	for i = 0, 15 do
-		local ability = entity:GetAbilityByIndex(i)
-		if type(ability) == 'table' then
+		local ability = entity:GetAbilityByIndex(i) or nil
+		if ability then
 			entity['abilities']['count'] = entity['abilities']['count'] + 1
 
 			ability:SetLevel(1)
@@ -84,8 +84,8 @@ function EntityManager:EntityConfigure(entity, player)
 			entity['harvest'] = 0
 			entity['shelter'] = {
 				['nearby'] = {},
-				['current'] = entity['owners']['current']['entity'],
-				['original'] = entity['owners']['current']['entity']
+				['current'] = entity['owningEntity'],
+				['original'] = entity['owningEntity']
 			}
 
 			entity:SetHullRadius(20)
@@ -107,7 +107,7 @@ function EntityManager:EntityConfigure(entity, player)
 		entity['positionInPlayerEntityList'] = player['positionInPlayerEntityList'] + 1
 		player['entities'][entity['positionInPlayerEntityList']] = entity
 	else
-		print('[Entity Manager] ERROR:  Cannot add entity to the owner player\'s table. Make sure players are setup before creating entities if possible.')
+		print('[Entity Manager] ERROR:  Cannot add entity to the owning player\'s table. Make sure players are setup before creating entities if possible.')
 	end
 
 	-- Entity Configuration Complete
