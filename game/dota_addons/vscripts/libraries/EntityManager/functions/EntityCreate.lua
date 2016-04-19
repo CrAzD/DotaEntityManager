@@ -27,8 +27,8 @@ function EntityManager:EntityCreate(entity, player)
 		return nil
 	end
 
-	if string.find(entity['type'], 'unit') then
-		return(EntityManager:EntityCreateUnit(entity, player))
+	if string.find(entity['type'], 'unit') or string.find(entity['type'], 'hero') or string.find(entity['type'], 'building') then
+		return(self:EntityCreateUnit(entity, player))
 	elseif string.find(entity['type'], 'dummy') then
 		if not entity['name'] then
 			print('[ENTITY MANAGER]  "entity[\'name\']" argument is MISSING.')
@@ -55,10 +55,8 @@ function EntityManager:EntityCreate(entity, player)
 			
 			return nil
 		else
-			return(EntityManager:EntityCreateDummy(entity, player))
+			return(self:EntityCreateDummy(entity, player))
 		end
-	elseif string.find(entity['type'], 'tavern') then -- Island Defense specific check and entity creation
-		return(EntityManager:EntityCreateTavern(entity, player))
 	else
 		print('[ENTITY MANAGER]  unknown "entity[\'type\'] argument. Make sure the spelling is correct, and there is a check for it.')
 

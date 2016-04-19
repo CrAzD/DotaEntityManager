@@ -5,9 +5,9 @@ if EntityManager == nil then
 end
 
 EntityManager['INFO'] = {
-	['VERSION'] = '0.02',
+	['VERSION'] = '0.21',
 	['URL'] = 'https://github.com/CrAzD/DotaEntityManager',
-	['DESCRIPTION'] = ''
+	['DESCRIPTION'] = 'A library that automates and optimizes entities.'
 }
 
 EntityManager['users'] = {} --Table that ties the userID to a specific player

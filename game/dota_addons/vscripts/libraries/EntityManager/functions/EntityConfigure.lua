@@ -28,6 +28,7 @@ function EntityManager:EntityConfigure(entity, player)
 	entity['queue'] = {}
 	entity['inventory'] = {}
 	entity['effects'] = {}
+	entity['effectsCount'] = -1
 
 	-- Initial Ability Configuration
 	entity['abilities'] = {

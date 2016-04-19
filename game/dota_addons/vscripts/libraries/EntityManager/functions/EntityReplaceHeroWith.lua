@@ -1,5 +1,10 @@
 
 
+--[[
+	EntityReplaceHeroWith
+		Enhances the builtin ReplaceHeroWith function with cleanup and EntityManager integration.
+]]--
+
 function EntityManager:EntityReplaceHeroWith(heroNameToReplaceWith, player)
 	local oldHero = player['hero']
 
@@ -12,5 +17,5 @@ function EntityManager:EntityReplaceHeroWith(heroNameToReplaceWith, player)
 
 	player['hero'] = hero
 	
-	return(EntityManager:EntityConfigure(hero, player))
+	return(self:EntityConfigure(hero, player))
 end

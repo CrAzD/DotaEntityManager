@@ -15,8 +15,7 @@ function EntityManager:OnGameStateChange(data)
 	else
 		for i=0, 9 do
 			if PlayerResource:IsValidPlayer(i) then
-
-				EntityManager['players'][i] = EntityManager:PlayerConfigure(PlayerResource:GetPlayer(i))
+				self['players'][i] = self:PlayerConfigure(PlayerResource:GetPlayer(i))
 			end
 		end
 

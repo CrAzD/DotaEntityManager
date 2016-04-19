@@ -11,11 +11,17 @@ function EntityManager:OnEntityKilled(data)
 			splitscreenplayer (integer) [-1 equals off]
 	]]--
 
-	local victim = EntIndexToHScript(data['entindex_killed'])
+	local entity = EntIndexToHScript(data['entindex_killed'])
 
-	for key, particle in pairs(victim['effects']) do
-		if not key['SkipCleanupOnDeath'] or key['SkipCleanupOnDeath'] == false then
-			self:ParticleCleanup(particle)
+	for i=0, entity['effectsCount'] do
+		local effect = entity['effects'][i] or nil
+		if effect then
+			if not effect['SkipCleanupOnDeath'] or effect['SkipCleanupOnDeath'] == false then
+				self:ParticleCleanup(effect['particle'])
+				entity['effects'][i] = nil
+			end
 		end
 	end
+
+	return
 end

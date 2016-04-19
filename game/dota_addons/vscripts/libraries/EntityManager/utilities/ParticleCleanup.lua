@@ -1,8 +1,12 @@
 
 
 function EntityManager:ParticleCleanup(particle)
-	ParticleManager:DestroyParticle(particle, true)
-	ParticleManager:ReleaseParticleIndex(particle)
+	if particle then
+		ParticleManager:DestroyParticle(particle, true)
+		ParticleManager:ReleaseParticleIndex(particle)
 
-	return
+		return
+	else
+		return
+	end
 end
