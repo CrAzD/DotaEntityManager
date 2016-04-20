@@ -72,31 +72,6 @@ function EntityManager:EntityConfigure(entity, player)
 		end
 	end
 
-	--[[ 
-		START || Island Defense specific configuration
-	--]]
-	if IslandDefense then
-		entity['isBuilder'] = entity['isBuilder'] or false
-		entity['isBuilderUnit'] = entity['isBuilderUnit'] or false
-		entity['isTitan'] = entity['isTitan'] or false
-
-		if string.find(entity['type'], 'peasant') then
-			entity['harvest'] = 0
-			entity['shelter'] = {
-				['nearby'] = {},
-				['current'] = entity['owningEntity'],
-				['original'] = entity['owningEntity']
-			}
-
-			entity:SetHullRadius(20)
-			entity['abilities']['harvest'] = entity['abilities']['harvest_lumber_base']
-			entity['abilities']['deposit_lumber']:ApplyDataDrivenModifier(entity, entity, 'modifier_has_lumber', nil)
-		end
-	end
-	--[[ 
-		END || Island Defense specific configuration
-	--]]
-
 	-- FindClearSpace and HullSize reset
 	FindClearSpaceForUnit(entity, entity['location'], true)
 	entity:SetHullRadius(entity['hullRadius'])

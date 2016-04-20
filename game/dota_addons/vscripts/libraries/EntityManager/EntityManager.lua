@@ -5,7 +5,7 @@ if EntityManager == nil then
 end
 
 EntityManager['INFO'] = {
-	['VERSION'] = '0.22',
+	['VERSION'] = '0.23',
 	['URL'] = 'https://github.com/CrAzD/DotaEntityManager',
 	['DESCRIPTION'] = 'A library that automates and optimizes entities.'
 }
@@ -29,7 +29,6 @@ local REQUIRE = {
 		'EntityConfigure',
 		'EntityCreate',
 		'EntityCreateDummy',
-		'EntityCreateTavern',
 		'EntityCreateUnit',
 		'EntityDestroy',
 		'EntityDestroyFast',
