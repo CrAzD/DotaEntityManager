@@ -15,8 +15,8 @@ function EntityManager:EntityConfigure(entity, player)
 	entity['originalPlayer'] = entity['owningPlayer']
 
 	entity['isUnit'] = entity['isUnit'] or false
-	entity['isHero'] = entity['isHero'] or entity:IsHero()
-	entity['isBuilding'] = entity['isBuilding'] or entity:IsBuilding()
+	entity['isHero'] = entity['isHero'] or entity:IsHero() or false
+	entity['isBuilding'] = entity['isBuilding'] or entity:IsBuilding() or false
 	entity['type'] = entity['type'] or 'unit'
 	entity['abilityPoints'] = entity['abilityPoints'] or 0
 
@@ -25,8 +25,6 @@ function EntityManager:EntityConfigure(entity, player)
 	entity['y'] = entity['location']['y']
 	entity['z'] = entity['location']['z']
 	entity['origin'] = entity['location']
-	entity['queue'] = {}
-	entity['inventory'] = {}
 	entity['effects'] = {}
 	entity['effectsCount'] = -1
 
@@ -63,13 +61,6 @@ function EntityManager:EntityConfigure(entity, player)
 	-- Building entity configuration
 	if string.find(entity['type'], 'building') then
 		entity['isBuilding'] = true
-		entity['construction'] = {}
-
-		entity:SetModelScale(0.5)
-
-		if FindUnitLabel(entity, 'CanQueue') then
-			BuildingQueue:InitializeBuildingEntity(entity)
-		end
 	end
 
 	-- FindClearSpace and HullSize reset
