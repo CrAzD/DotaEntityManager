@@ -17,29 +17,38 @@ function EntityManager:AbilityAdd(entity, abilityName)
 		print('[ENTITY MANAGER]  "abilityName" argument must be a STRING.')
 
 		return false
-	elseif not entity['ability'] or type(entity['ability']) ~= 'table' then
+	elseif not entity['abilities'][abilityName] or type(entity['abilities'][abilityName]) ~= 'table' then
 		print('[ENTITY MANAGER]  entity must be configured before adding an ability.')
 
 		return false
 	else
-		entity:AbilityAdd(abilityName)
+		entity:AddAbility(abilityName)
 		local ability = entity:FindAbilityByName(abilityName)
-		if not ability or type(abilityName) ~= 'table' then
-			print('[ENTITY MANAGER]  '..abilityName..' was not found within '..entity['name']..'. Verify correct spelling and existance of ability.')
+		if not ability then
+			print('[Entity Manager]'  ..abilityName..' was not added to '..entity['name']..'. Verify abilityName is spelt correctly and that it exists.')
 
 			return false
 		else
 			entity['abilities']['count'] = entity['abilities']['count'] + 1
 
-			ability:SetLevel(1)
+			ability['name'] = abilityName
+			ability:SetLevel(self:AbilityGetStartingLevel(ability))
 			ability['cost'] = ability:GetGoldCost(-1)
-			ability['name'] = ability:GetAbilityName()
 			ability['caster'] = entity
-			ability['position'] = entity['abilities']['count']
+			ability['position'] = #entity['abilities']['list']
 
-			entity['abilities'][entity['abilities']['count']] = ability
+			ability['silence'] = {
+				['status'] = false,
+				['immune'] = self:AbilitySilenceIsImmune(ability),
+				['duration'] = self:AbilitySilenceGetDuration(ability),
+				['list'] = {}
+			}
+
 			entity['abilities'][ability['name']] = ability
-			entity['abilities']['list'][entity['abilities']['count']] = ability
+			entity['abilities'][ability['position']] = ability
+			entity['abilities']['list'][ability['position']] = ability
+
+			self:AbilityUpdateList(entity)
 
 			return true
 		end

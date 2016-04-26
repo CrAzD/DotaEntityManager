@@ -38,16 +38,22 @@ function EntityManager:EntityConfigure(entity, player)
 		if ability then
 			entity['abilities']['count'] = entity['abilities']['count'] + 1
 
-			ability:SetLevel(1)
+			ability['name'] = abilityName
+			ability:SetLevel(self:AbilityGetStartingLevel(ability))
 			ability['cost'] = ability:GetGoldCost(-1)
-			ability['name'] = ability:GetAbilityName()
 			ability['caster'] = entity
-			ability['position'] = entity['abilities']['count']
-			ability['level'] = 1
+			ability['position'] = #entity['abilities']['list']
 
-			entity['abilities'][entity['abilities']['count']] = ability
+			ability['silence'] = {
+				['status'] = false,
+				['immune'] = self:AbilitySilenceIsImmune(ability),
+				['duration'] = self:AbilitySilenceGetDuration(ability),
+				['list'] = {}
+			}
+
 			entity['abilities'][ability['name']] = ability
-			entity['abilities']['list'][entity['abilities']['count']] = ability
+			entity['abilities'][ability['position']] = ability
+			entity['abilities']['list'][ability['position']] = ability
 		end
 	end
 
