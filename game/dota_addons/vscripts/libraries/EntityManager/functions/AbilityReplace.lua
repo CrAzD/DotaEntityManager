@@ -30,8 +30,8 @@ function EntityManager:AbilityReplace(entity, abilityOld, abilityNewName)
 
 		return false
 	else
-		self:AbilityRemove(entity, abilityOld)
-		self:AbilityAdd(entity, abilityNewName)
+		self:AbilityRemoveFast(entity, abilityOld)
+		self:AbilityAddFast(entity, abilityNewName)
 
 		return true
 	end

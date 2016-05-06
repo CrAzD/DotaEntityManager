@@ -12,5 +12,5 @@ function EntityManager:EntityDestroyFast(entity)
 
 	UTIL_Remove(entity)
 
-	return
+	return true
 end

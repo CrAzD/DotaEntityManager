@@ -10,8 +10,10 @@ function EntityManager:OnGameStateChange(data)
 			splitscreenplayer (integer) [-1 equals off]
 	]]--
 
+	-- If the state of the game is not in hero selection then just return.
 	if GameRules:State_Get() ~= DOTA_GAMERULES_STATE_HERO_SELECTION then
 		return
+	-- If the state of the game IS hero selelction, configure all valid players.
 	else
 		for i=0, 9 do
 			if PlayerResource:IsValidPlayer(i) then

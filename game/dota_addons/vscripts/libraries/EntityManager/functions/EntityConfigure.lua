@@ -44,13 +44,6 @@ function EntityManager:EntityConfigure(entity, player)
 			ability['caster'] = entity
 			ability['position'] = #entity['abilities']['list']
 
-			ability['silence'] = {
-				['status'] = false,
-				['immune'] = self:AbilitySilenceIsImmune(ability),
-				['duration'] = self:AbilitySilenceGetDuration(ability),
-				['list'] = {}
-			}
-
 			entity['abilities'][ability['name']] = ability
 			entity['abilities'][ability['position']] = ability
 			entity['abilities']['list'][ability['position']] = ability

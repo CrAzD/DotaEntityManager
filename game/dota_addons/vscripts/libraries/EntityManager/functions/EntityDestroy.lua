@@ -4,7 +4,6 @@
 	EntityDestroy
 		Checks to make sure the entity exists, is a table, cleans up the player's tables, and properly removes the entity from the game.
 ]]--
-
 function EntityManager:EntityDestroy(entity)
 	if not entity then
 		print('[ENTITY MANAGER]  "entity" argument is MISSING or NIL.')

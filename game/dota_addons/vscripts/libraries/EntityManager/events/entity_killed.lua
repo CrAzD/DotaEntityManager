@@ -13,6 +13,7 @@ function EntityManager:OnEntityKilled(data)
 
 	local entity = EntIndexToHScript(data['entindex_killed'])
 
+	-- Cleanup all effects tied to entities upon their death, while skipping ones that have SlipCleanupOnDeath set to True.
 	for i=0, entity['effectsCount'] do
 		local effect = entity['effects'][i] or nil
 		if effect then

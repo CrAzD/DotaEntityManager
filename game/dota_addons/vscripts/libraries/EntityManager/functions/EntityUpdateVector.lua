@@ -11,5 +11,5 @@ function EntityManager:EntityUpdateVector(entity)
 	entity['y'] = entity['vector']['y']
 	entity['z'] = entity['vector']['z']
 
-	return entity['vector']
+	return(entity['vector'])
 end
