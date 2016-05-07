@@ -11,11 +11,16 @@ function EntityManager:EntityReplaceHeroWith(heroNameToReplaceWith, player)
 	PlayerResource:ReplaceHeroWith(player['id'], heroNameToReplaceWith, 0, 0)
 	UTIL_Remove(oldHero)
 
-	local hero = PlayerResource:GetSelectedHeroEntity(player['id'])	
-	hero['isHero'] = true
-	hero['type'] = 'hero'
+	local entity = PlayerResource:GetSelectedHeroEntity(player['id'])
+	entity['name'] = heroNameToReplaceWith or entity:GetUnitName() or nil
+	entity['origin'] = entity:GetAbsOrigin() or nil
+	entity['owningEntity'] = entity or nil
+	entity['owningPlayer'] = player or nil
+	entity['team'] = player['team'] or entity:GetTeam() or nil
+	entity['isHero'] = true
+	entity['type'] = 'hero'
 
-	player['hero'] = hero
-	
-	return(self:EntityConfigure(hero, player))
+	player['hero'] = entity
+
+	return(self:EntityConfigure(entity, player))
 end

@@ -6,8 +6,9 @@ function EntityManager:EntityConfigure(entity, player)
 		for key, variable in pairs(self['KV_FILES']['UNITS'][entity['name']]) do
 			entity[key] = variable
 		end
-	if self['KV_FILES']['HEROES'][entity['name']]
-		for k, v in pairs(self['KV_FILES']['HEROES'][entity['name']]) do
+	end
+	if self['KV_FILES']['HEROES'][entity['name']] then
+		for key, variable in pairs(self['KV_FILES']['HEROES'][entity['name']]) do
 			entity[key] = variable
 		end
 	end
@@ -47,11 +48,11 @@ function EntityManager:EntityConfigure(entity, player)
 		if ability then
 			entity['abilities']['count'] = entity['abilities']['count'] + 1
 
-			ability['name'] = abilityName
+			ability['name'] = ability:GetAbilityName()
 			ability:SetLevel(self:AbilityGetStartingLevel(ability))
 			ability['cost'] = ability:GetGoldCost(-1)
 			ability['caster'] = entity
-			ability['position'] = #entity['abilities']['list']
+			ability['position'] = entity['abilities']['count']
 
 			entity['abilities'][ability['name']] = ability
 			entity['abilities'][ability['position']] = ability
