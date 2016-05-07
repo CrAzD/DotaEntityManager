@@ -1,9 +1,19 @@
 
 
 function EntityManager:EntityConfigure(entity, player)
+	-- Insert variables from the KV file table
+	if self['KV_FILES']['UNITS'][entity['name']] then
+		for key, variable in pairs(self['KV_FILES']['UNITS'][entity['name']]) do
+			entity[key] = variable
+		end
+	if self['KV_FILES']['HEROES'][entity['name']]
+		for k, v in pairs(self['KV_FILES']['HEROES'][entity['name']]) do
+			entity[key] = variable
+		end
+	end
+
 	-- General Variables
 	entity['id'] = entity['id'] or entity:GetOwner():GetPlayerID()
-	entity['name'] = entity['name'] or entity:GetUnitName()
 	entity['team'] = entity['team'] or entity:GetTeam()
 	entity['handle'] = entity['handle'] or entity:GetEntityHandle() or nil
 	entity['hullRadius'] = entity['hullRadius'] or entity:GetHullRadius()
@@ -16,7 +26,6 @@ function EntityManager:EntityConfigure(entity, player)
 
 	entity['isUnit'] = entity['isUnit'] or false
 	entity['isHero'] = entity['isHero'] or entity:IsHero() or false
-	entity['isBuilding'] = entity['isBuilding'] or entity:IsBuilding() or false
 	entity['type'] = entity['type'] or 'unit'
 	entity['abilityPoints'] = entity['abilityPoints'] or 0
 
@@ -51,15 +60,10 @@ function EntityManager:EntityConfigure(entity, player)
 	end
 
 	-- Hero entity configuration
-	if string.find(entity['type'], 'hero') then
+	if entity['isHero'] then
 		entity:SetAbilityPoints(entity['abilityPoints'])
 		entity['isHero'] = true
 		entity['type'] = 'hero'
-	end
-
-	-- Building entity configuration
-	if string.find(entity['type'], 'building') then
-		entity['isBuilding'] = true
 	end
 
 	-- FindClearSpace and HullSize reset
@@ -68,11 +72,11 @@ function EntityManager:EntityConfigure(entity, player)
 	entity:SetControllableByPlayer(entity['id'], true)
 
 	-- Add entity to owning player entity table
-	if type(player['entities']) == 'table' then
+	if player['entities'] then
 		entity['positionInPlayerEntityList'] = player['positionInPlayerEntityList'] + 1
 		player['entities'][entity['positionInPlayerEntityList']] = entity
 	else
-		print('[Entity Manager] ERROR:  Cannot add entity to the owning player\'s table. Make sure players are setup before creating entities if possible.')
+		print('[Entity Manager] ERROR:  Cannot add entity to the owning player\'s table. If possible setup players before creating entities.')
 	end
 
 	-- Entity Configuration Complete
