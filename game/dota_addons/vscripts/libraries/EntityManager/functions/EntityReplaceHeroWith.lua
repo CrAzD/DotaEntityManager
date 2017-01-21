@@ -22,5 +22,5 @@ function EntityManager:EntityReplaceHeroWith(heroNameToReplaceWith, player)
 
 	player['hero'] = entity
 
-	return(self:Entity(entity, player))
+	return(self:EntityConfigure(entity, player))
 end

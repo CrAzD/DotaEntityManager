@@ -5,7 +5,7 @@ if EntityManager == nil then
 end
 
 EntityManager['INFO'] = {
-	['VERSION'] = '0.30',
+	['VERSION'] = '0.31',
 	['URL'] = 'https://github.com/CrAzD/DotaEntityManager',
 	['DESCRIPTION'] = 'A library that optimizes entities by storing the most commonly used data inside them. Rather than constantly firing functions for name/team/owner/etc, that data is stored directly in the entity.'
 }

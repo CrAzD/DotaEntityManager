@@ -1,6 +1,6 @@
 
 
-function EntityManager:Entity(entity, player)
+function EntityManager:EntityConfigure(entity, player)
 	-- Functions
 	function entity.AbilityConfigure(ability)
 		ability['name'] = ability['name'] or ability:GetAbilityName() or nil
@@ -25,11 +25,13 @@ function EntityManager:Entity(entity, player)
 		if not type(abilityName) == 'string' then
 			self:Error('\'abilityName\' parameter must be a string.')
 			return nil
+		end
 
 		local kvAbility = self['KV_FILES']['ABILITIES'][abilityName] or nil
 		if not kvAbility then
 			self:Error('\'abilityName\' does not exist in the KV_FILE table, check spelling.')
 			return nil
+		end
 
 		entity:AddAbility(abilityName)
 
@@ -50,6 +52,7 @@ function EntityManager:Entity(entity, player)
 		if not type(ability) == 'table' then
 			self:Error('the ability parameter must be a table/object, not a '..type(ability)..'.')
 			return false
+		end
 
 		local abilityOld = {
 			['name'] = ability['name'],
@@ -70,10 +73,12 @@ function EntityManager:Entity(entity, player)
 		if not type(abilityOld) == 'table' then
 			self:Error('abilityOld parameter must be a table/object. It\'s currently a '..tostring(abilityOld))
 			return false
+		end
 
 		if not type(abilityNew) == 'string' then
 			self:Error('abilityNew parameter must be a string. It\'s currently a '..tostring(abilityNew))
 			return false
+		end
 
 		entity.AbilityRemove(abilityOld)
 		entity.AbilityAdd(abilityNew)
@@ -98,13 +103,13 @@ function EntityManager:Entity(entity, player)
 		return
 	end
 
-	function entity.LocationUpdate()
+	function entity.LocationRefresh()
 		entity['location'] = entity:GetAbsOrigin() or {0, 0, 0}
 		entity['loc'] = entity['location'] or {0, 0, 0}
 		entity['x'] = entity['origin']['x'] or 0
 		entity['y'] = entity['origin']['y'] or 0
 		entity['z'] = entity['origin']['z'] or 0
-		return true
+		return(entity['location'])
 	end
 
 	-- Read and insert varaibles found in the table of the KV file(s)
@@ -119,17 +124,14 @@ function EntityManager:Entity(entity, player)
 	end
 
 	-- General Variables
-	local owner = entity:GetOwner()
-	local playerID = owner:GetPlayerID()
-
-	entity['id'] = entity['id'] or playerID or nil
+	entity['id'] = entity['id'] or entity:GetOwner():GetPlayerID() or nil
 	entity['team'] = entity['team'] or entity:GetTeam() or nil
 	entity['handle'] = entity['handle'] or entity:GetEntityHandle() or nil
 	entity['hullRadius'] = entity['hullRadius'] or entity:GetHullRadius() or nil
 	entity['index'] = entity['index'] or entity:GetEntityIndex() or nil
 
 	entity['owningEntity'] = entity['owningEntity'] or entity:GetOwnerEntity() or nil
-	entity['owningPlayer'] = entity['owningPlayer'] or owner or nil
+	entity['owningPlayer'] = entity['owningPlayer'] or entity:GetOwner() or nil
 
 	entity['type'] = entity['type'] or self['defaultEntityType'] or 'unit'
 
@@ -183,8 +185,8 @@ function EntityManager:Entity(entity, player)
 	if player['entities'] then
 		entity['positionInPlayerEntityList'] = player['positionInPlayerEntityList'] + 1
 		player['entities'][entity['positionInPlayerEntityList']] = entity
-	else
-		print('[Entity Manager] ERROR:  Cannot add entity to the owning player\'s table. Setup players before creating entities and/or using the EntityManager.')
+	elseif not entity['id'] == -123 then
+		self:Error('Cannot add entity to owning player, verify player has been configured. \nIf this is a dummy unit use -123 as the id.')
 	end
 
 	-- Entity is configured, finishing touch(s)

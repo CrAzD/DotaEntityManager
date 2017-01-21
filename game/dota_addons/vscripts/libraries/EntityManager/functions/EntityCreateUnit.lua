@@ -18,7 +18,7 @@
 function EntityManager:EntityCreateUnit(entityData, player)
 	local entityTemp = CreateUnitByName(entityData['name'], entityData['origin'], true, entityData['owningEntity'], entityData['owningPlayer'], entityData['team'])
 
-	for key, value in pairs(entityDat) do
+	for key, value in pairs(entityData) do
 		entityTemp[key] = value or nil
 	end
 
