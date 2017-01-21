@@ -95,7 +95,17 @@ function EntityManagerInitialization(manager)
 				return false
 			end
 
-			entity.AbilityRemove(abilityOld)
+			local abilityRemoved = {
+				['name'] = abilityOld['name'],
+				['position'] = abilityOld['position']
+			}
+
+			entity:RemoveAbility(abilityRemoved['name'])
+			entity['abilities'][abilityRemoved['position']] = nil
+			entity['abilities'][abilityRemoved['name']] = nil
+			entity['abilities']['list'][abilityRemoved['position']] = nil
+			entity['abilities']['count'] = entity['abilities']['count'] - 1
+
 			entity.AbilityAdd(abilityNew)
 			return true
 		end
