@@ -5,7 +5,7 @@ if EntityManager == nil then
 end
 
 EntityManager['INFO'] = {
-	['VERSION'] = '0.29',
+	['VERSION'] = '0.30',
 	['URL'] = 'https://github.com/CrAzD/DotaEntityManager',
 	['DESCRIPTION'] = 'A library that optimizes entities by storing the most commonly used data inside them. Rather than constantly firing functions for name/team/owner/etc, that data is stored directly in the entity.'
 }
@@ -18,7 +18,7 @@ EntityManager['KV_FILES'] = {
 	['HEROES'] = LoadKeyValues('scripts/npc/npc_heroes_custom.txt'), --Table that holds all unit data from the main unit KV
 	['UNITS'] = LoadKeyValues('scripts/npc/npc_units_custom.txt') --Table that holds all hero data from the main hero KV
 }
-
+EntityManager['defaultEntityType'] = 'unit'
 --[[
 	A table of all required files for EntityManager, and a simple loop to require them all.
 --]]
@@ -28,14 +28,6 @@ local REQUIRE = {
 		'game_rules_state_change'
 	},
 	['functions'] = {
-		'AbilityAdd',
-		'AbilityAddFast',
-		'AbilityGetStartingLevel',
-		'AbilityRemove',
-		'AbilityRemoveFast',
-		'AbilityReplace',
-		'AbilityReplaceFast',
-		'AbilityUpdateList',
 		'EntityConfigure',
 		'EntityCreate',
 		'EntityCreateDummy',
@@ -43,7 +35,6 @@ local REQUIRE = {
 		'EntityDestroy',
 		'EntityDestroyFast',
 		'EntityReplaceHeroWith',
-		'EntityUpdateVector',
 		'PlayerConfigure'
 	},
 	['utilities'] = {
@@ -56,3 +47,5 @@ for tFolder, tTable in pairs(REQUIRE) do
 		require('libraries/EntityManager/'..tFolder..'/'..tFile)
 	end
 end
+
+require('libraries/EntityManager/Settings')
