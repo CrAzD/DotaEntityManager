@@ -407,5 +407,9 @@ function EntityManagerInitialization(manager)
 	ListenToGameEvent('game_rules_state_change', OnGameStateChange, self)
 	ListenToGameEvent('entity_killed', OnEntityKilled, self)
 
+
+	--[[
+		Final touch(s), then return the manager.
+	]]--
 	return(manager)
 end

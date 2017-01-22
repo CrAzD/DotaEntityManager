@@ -3,11 +3,13 @@
 require('libraries/EntityManager/Manager')
 if EntityManager == nil then
 	_G.EntityManager = EntityManagerInitialization(class({}))
+else
+	_G.EntityManager = EntityManagerInitialization(EntityManager)
 end
 local manager = EntityManager
 
 -- Information about the library
-manager['version'] = '0.40.000'
+manager['version'] = 0.50
 manager['url'] = 'https://github.com/CrAzD/DotaEntityManager'
 manager['description'] = 'This library optimizes, and scopes entities. The main way of optimization is by storing everything inside the entity upon creation. Therefor eliminating function overhead (calling funcitons a million times for no reason).'
 
@@ -31,7 +33,7 @@ for _, kvTable in pairs(kvTables) do
 end
 
 print('\n\nEntityManager:  Initialization complete...'..
-	'\n\tVersion:  '..manager['version']..
+	'\n\tVersion:  '..tostring(manager['version'])..
 	'\n\tURL:  '..manager['url']..
 	'\n\tDescription:  '..manager['description']..
 	'\n'
