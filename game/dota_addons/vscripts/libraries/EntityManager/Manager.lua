@@ -30,13 +30,13 @@ function EntityManagerInitialization(manager)
 		function entity.AbilityAdd(abilityName)
 			if not type(abilityName) == 'string' then
 				manager.Error('\'abilityName\' parameter must be a string. It\'s currently a '..tostring(type(abilityName)))
-				return false
+				return nil
 			end
 
 			local kvAbility = manager['kv']['abilities'][abilityName] or nil
 			if not kvAbility then
 				manager.Error('\'abilityName\' does not exist in the KV_FILE table, check spelling.')
-				return false
+				return nil
 			end
 
 			entity:AddAbility(abilityName)
@@ -44,7 +44,7 @@ function EntityManagerInitialization(manager)
 			local ability = entity:FindAbilityByName(abilityName) or nil
 			if not ability then
 				manager.Error(tostring(abilityName)..' was not added to '..entity['name']..'.')
-				return false
+				return nil
 			else
 				ability['name'] = abilityName
 
@@ -59,7 +59,7 @@ function EntityManagerInitialization(manager)
 				entity['abilities']['list'][ability['position']] = ability
 
 				entity.AbilityListRefresh()
-				return true
+				return ability
 			end
 		end
 
@@ -212,7 +212,7 @@ function EntityManagerInitialization(manager)
 		end
 
 		-- Entity is configured, finishing touch(s)
-		entity['isConfigured'] = true
+		entity['entityConfigured'] = true
 		return(entity)
 	end
 
@@ -234,7 +234,7 @@ function EntityManagerInitialization(manager)
 		player['positionInPlayerEntityList'] = -1
 
 		-- Player is configured, finishing touch(s)
-		player['isConfigured'] = true
+		player['entityConfigured'] = true
 		return(player)
 	end
 
@@ -340,21 +340,6 @@ function EntityManagerInitialization(manager)
 			manager.Error('failed to destroy entity, '..entity['name']..'.')
 			return false
 		end
-	end
-
-	function manager.LoadKVFile(kvFile, tableToStoreIn)
-		if not type(kvFile) == 'string' then
-			manager.Error('kvFile parameter must be a string. It\'s currently a '..tostring(type(kvFile)..'.'))
-			return false
-		end
-
-		if not type(tableToStoreIn) == 'table' then
-			manager.Error('tableToStoreIn parameter must be a table. It\'s currently a '..tostring(type(kvFile)..'.'))
-			return false
-		end
-
-		tableToStoreIn = LoadKeyValues(kvFile)
-		return true
 	end
 
 	function manager.ParticleCleanup(particle)

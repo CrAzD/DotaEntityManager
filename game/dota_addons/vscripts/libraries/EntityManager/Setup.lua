@@ -9,7 +9,7 @@ end
 local manager = EntityManager
 
 -- Information about the library
-manager['version'] = 0.50
+manager['version'] = 0.51
 manager['url'] = 'https://github.com/CrAzD/DotaEntityManager'
 manager['description'] = 'This library optimizes, and scopes entities. The main way of optimization is by storing everything inside the entity upon creation. Therefor eliminating function overhead (calling funcitons a million times for no reason).'
 
@@ -32,6 +32,7 @@ for _, kvTable in pairs(kvTables) do
 	end
 end
 
+-- Messages and info spam
 print('\n\nEntityManager:  Initialization complete...'..
 	'\n\tVersion:  '..tostring(manager['version'])..
 	'\n\tURL:  '..manager['url']..
