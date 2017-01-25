@@ -9,7 +9,7 @@ end
 local manager = EntityManager
 
 -- Information about the library
-manager['version'] = 0.54
+manager['version'] = 0.55
 manager['url'] = 'https://github.com/CrAzD/DotaEntityManager'
 
 -- General setup and configuration

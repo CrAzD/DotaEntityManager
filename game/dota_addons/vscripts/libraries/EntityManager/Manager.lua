@@ -227,7 +227,7 @@ function EntityManagerInitialization(manager)
 
         -- General Variables
         player['id'] = player['id'] or player:GetPlayerID() or -123
-        player['index'] = player:GetEntityIndex()
+        player['index'] = player:GetEntityIndex() or 0
         player['hero'] = player['hero'] or PlayerResource:GetSelectedHeroEntity(player['id']) or nil
         player['team'] = player['team'] or PlayerResource:GetTeam(player['id']) or 0
         player['handle'] = player['handle'] or PlayerResource:GetPlayer(player['id']) or nil
