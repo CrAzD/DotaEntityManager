@@ -361,7 +361,7 @@ function EntityManagerInitialization(manager)
     --[[
         Manager EVENTS
     ]]--
-    local function OnGameStateChange(data)
+    local function EventGameStateChange(data)
         if GameRules:State_Get() ~= DOTA_GAMERULES_STATE_HERO_SELECTION then
             return
 
@@ -375,7 +375,7 @@ function EntityManagerInitialization(manager)
         end
     end
 
-    local function OnEntityKilled(ddta)
+    local function EvenEntityKilled(ddta)
         local entity = EntIndexToHScript(data['entindex_killed'])
 
         for i=0, #entity['effects'] do
@@ -394,8 +394,8 @@ function EntityManagerInitialization(manager)
         end
     end
 
-    ListenToGameEvent('game_rules_state_change', OnGameStateChange, self)
-    ListenToGameEvent('entity_killed', OnEntityKilled, self)
+    ListenToGameEvent('game_rules_state_change', EventGameStateChange, self)
+    ListenToGameEvent('entity_killed', EvenEntityKilled, self)
 
 
     --[[
