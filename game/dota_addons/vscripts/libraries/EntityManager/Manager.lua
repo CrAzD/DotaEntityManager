@@ -169,7 +169,7 @@ function EntityManagerInitialization(manager)
         entity['y'] = entity['origin']['y'] or 0
         entity['z'] = entity['origin']['z'] or 0
 
-        entity['effects'] = {['count'] = -1}
+        entity['effects'] = {}
 
         -- Initial ability setup & configuration
         entity['abilities'] = {
@@ -213,6 +213,8 @@ function EntityManagerInitialization(manager)
 
         -- Entity is configured, finishing touch(s)
         entity['entityConfigured'] = true
+        manager['indexed'][entity['index']] = entity
+        FireGameEventLocal('entity_configured', {['index']=entity['index']})
         return(entity)
     end
 
@@ -225,6 +227,7 @@ function EntityManagerInitialization(manager)
 
         -- General Variables
         player['id'] = player['id'] or player:GetPlayerID() or -123
+        player['index'] = player:GetEntityIndex()
         player['hero'] = player['hero'] or PlayerResource:GetSelectedHeroEntity(player['id']) or nil
         player['team'] = player['team'] or PlayerResource:GetTeam(player['id']) or 0
         player['handle'] = player['handle'] or PlayerResource:GetPlayer(player['id']) or nil
@@ -235,6 +238,8 @@ function EntityManagerInitialization(manager)
 
         -- Player is configured, finishing touch(s)
         player['entityConfigured'] = true
+        manager['indexed'][player['index']] = player
+        FireGameEventLocal('player_configured', {['index']=player['index']})
         return(player)
     end
 
@@ -301,7 +306,7 @@ function EntityManagerInitialization(manager)
 
     function manager.EntityReplaceHero(heroOld, nameOfNewHero, player)
         local heroData = {
-            ['name'] = 'nameOfNewHero',
+            ['name'] = nameOfNewHero,
             ['origin'] = heroOld.LocationRefresh(),
             ['owningEntity'] = heroOld['owningEntity'],
             ['owningPlayer'] = heroOld['owningPlayer'],
@@ -311,7 +316,7 @@ function EntityManagerInitialization(manager)
         }
 
         PlayerResource:ReplaceHeroWith(player['id'], nameOfNewHero, 0, 0)
-        UTIL_Remove(heroOld)
+        manager.EntityDestroy(heroOld)
 
         local hero = PlayerResource:GetSelectedHeroEntity(player['id'])
         for key, value in pairs(heroData) do
@@ -373,8 +378,8 @@ function EntityManagerInitialization(manager)
     local function OnEntityKilled(ddta)
         local entity = EntIndexToHScript(data['entindex_killed'])
 
-        for i=0, entity['effectsCount'] do
-            local effect = entity['effects'] or nil
+        for i=0, #entity['effects'] do
+            local effect = entity['effects'][i] or nil
             if effect then
                 if not effect['SkipCleanupOnDeath'] then
                     if manager.ParticleCleanup(effect['particle']) then

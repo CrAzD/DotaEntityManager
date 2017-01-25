@@ -9,12 +9,16 @@ end
 local manager = EntityManager
 
 -- Information about the library
-manager['version'] = 0.52
+manager['version'] = 0.53
 manager['url'] = 'https://github.com/CrAzD/DotaEntityManager'
-manager['description'] = 'This library optimizes, and scopes entities. The main way of optimization is by storing everything inside the entity upon creation. Therefor eliminating function overhead (calling funcitons a million times for no reason).'
+manager['description'] = 'This library optimizes, and scopes entities. The main way of optimization is by storing everything inside the entity upon creation. Therefore eliminating function overhead (calling funcitons a million times for no reason).'
 
 -- General setup and configuration
 manager['entity'] = GameRules:GetGameModeEntity()
+manager['ent'] = manager['entity']
+
+manager['indexed'] = {}
+manager['entities'] = {}
 manager['users'] = {}
 manager['players'] = {}
 
