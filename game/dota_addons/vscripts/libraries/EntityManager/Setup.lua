@@ -9,7 +9,7 @@ end
 local manager = EntityManager
 
 -- Information about the library
-manager['version'] = 0.55
+manager['version'] = 0.56
 manager['url'] = 'https://github.com/CrAzD/DotaEntityManager'
 
 -- General setup and configuration
@@ -38,5 +38,5 @@ end
 -- Messages and info spam
 print('\nEntityManager:  Initialization complete...'..
     '\n\tVersion:  '..tostring(manager['version'])..
-    '\n\tURL:  '..manager['url']..
+    '\n\tURL:  '..manager['url']
 )
