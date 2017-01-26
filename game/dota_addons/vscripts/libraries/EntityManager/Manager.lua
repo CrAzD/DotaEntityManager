@@ -214,7 +214,7 @@ function EntityManagerInitialization(manager)
         -- Entity is configured, finishing touch(s)
         entity['entityConfigured'] = true
         manager['indexed'][entity['index']] = entity
-        FireGameEventLocal('entity_configured', {['index']=entity['index']})
+        FireGameEventLocal('em_entity_configured', {['index']=entity['index']})
         return(entity)
     end
 
@@ -239,7 +239,7 @@ function EntityManagerInitialization(manager)
         -- Player is configured, finishing touch(s)
         player['entityConfigured'] = true
         manager['indexed'][player['index']] = player
-        FireGameEventLocal('player_configured', {['index']=player['index']})
+        FireGameEventLocal('em_player_configured', {['index']=player['index']})
         return(player)
     end
 
