@@ -214,7 +214,7 @@ function EntityManagerInitialization(manager)
         -- Entity is configured, finishing touch(s)
         entity['entityConfigured'] = true
         manager['indexed'][entity['index']] = entity
-        FireGameEventLocal('em_entity_configured', {['index']=entity['index']})
+        FireGameEventLocal('em_entity_configured', {['index'] = entity['index']})
         return(entity)
     end
 
@@ -223,8 +223,6 @@ function EntityManagerInitialization(manager)
         Manager PLAYER
     ]]--
     function manager.Player(player)
-        -- Functions
-
         -- General Variables
         player['id'] = player['id'] or player:GetPlayerID() or -123
         player['index'] = player:GetEntityIndex() or 0
@@ -239,7 +237,7 @@ function EntityManagerInitialization(manager)
         -- Player is configured, finishing touch(s)
         player['entityConfigured'] = true
         manager['indexed'][player['index']] = player
-        FireGameEventLocal('em_player_configured', {['index']=player['index']})
+        FireGameEventLocal('em_player_configured', {['index'] = player['index']})
         return(player)
     end
 
@@ -375,7 +373,7 @@ function EntityManagerInitialization(manager)
         end
     end
 
-    local function EvenEntityKilled(ddta)
+    local function EventEntityKilled(ddta)
         local entity = EntIndexToHScript(data['entindex_killed'])
 
         for i=0, #entity['effects'] do
@@ -395,11 +393,12 @@ function EntityManagerInitialization(manager)
     end
 
     ListenToGameEvent('game_rules_state_change', EventGameStateChange, self)
-    ListenToGameEvent('entity_killed', EvenEntityKilled, self)
+    ListenToGameEvent('entity_killed', EventEntityKilled, self)
 
 
     --[[
         Final touch(s), then return the manager.
     ]]--
+    FireGameEventLocal('em_manager_configured', {['name']='EntityManager'})
     return(manager)
 end
