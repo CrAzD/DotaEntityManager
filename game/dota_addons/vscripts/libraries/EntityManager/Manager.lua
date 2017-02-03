@@ -147,6 +147,7 @@ function EntityManagerInitialization(manager)
 
         -- General Variables
         entity['id'] = entity['id'] or entity:GetOwner():GetPlayerID() or nil
+        entity['name'] = entity['name'] or entity:GetUnitName() or nil
         entity['team'] = entity['team'] or entity:GetTeam() or nil
         entity['handle'] = entity['handle'] or entity:GetEntityHandle() or nil
         entity['hullRadius'] = entity['hullRadius'] or entity:GetHullRadius() or nil
