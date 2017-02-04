@@ -237,7 +237,10 @@ function EntityManagerInitialization(manager)
 
         -- Player is configured, finishing touch(s)
         player['entityConfigured'] = true
+
         manager['indexed'][player['index']] = player
+        manager['players'][player['id']] = player
+        
         FireGameEventLocal('em_player_configured', {['index'] = player['index']})
         return(player)
     end
@@ -363,7 +366,6 @@ function EntityManagerInitialization(manager)
     local function EventGameStateChange(data)
         if GameRules:State_Get() ~= DOTA_GAMERULES_STATE_HERO_SELECTION then
             return
-
         else
             for i=0, 9 do
                 if PlayerResource:IsValidPlayer(i) then
@@ -400,6 +402,7 @@ function EntityManagerInitialization(manager)
     --[[
         Final touch(s), then return the manager.
     ]]--
+    manager['initialized'] = true
     FireGameEventLocal('em_manager_configured', {['name']='EntityManager'})
     return(manager)
 end

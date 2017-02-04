@@ -1,15 +1,10 @@
 
 
 require('libraries/EntityManager/Manager')
-if EntityManager == nil then
-    _G.EntityManager = EntityManagerInitialization(class({}))
-else
-    _G.EntityManager = EntityManagerInitialization(EntityManager)
-end
-local manager = EntityManager
+local manager = EntityManagerInitialization(class({}))
 
 -- Information about the library
-manager['version'] = 0.60
+manager['version'] = 0.61
 manager['url'] = 'https://github.com/CrAzD/DotaEntityManager'
 
 -- General setup and configuration
@@ -18,7 +13,6 @@ manager['ent'] = manager['entity']
 
 manager['indexed'] = {}
 manager['entities'] = {}
-manager['users'] = {}
 manager['players'] = {}
 
 -- KV file loading and initialization
@@ -40,3 +34,5 @@ print('\nEntityManager:  Initialization complete...'..
     '\n\tVersion:  '..tostring(manager['version'])..
     '\n\tURL:  '..manager['url']
 )
+
+return(manager)
