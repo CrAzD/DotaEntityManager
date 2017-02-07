@@ -137,6 +137,18 @@ function EntityManagerInitialization(manager)
             return(entity['location'])
         end
 
+        function entity.SetHealth(amount)
+            if type(amount) ~= 'number' then
+                manager.Error('SetHealth only takes a number as the parameter.')
+                return false
+            end
+
+            if entity:GetMaxHealth() < amount then
+                entity:SetMaxHealth(amount)
+            end
+            entity:SetHealth(amount)
+        end
+
         -- KV Variables
         local kvTable = manager['kv']['entities'][entity['name']] or nil
         if kvTable then
