@@ -1,13 +1,19 @@
 
 
---[[
-]]--
+-- EntityManagerInitialization(manager)
+    -- manager MUST be a class (class({}) for simply way of making a class)
+    -- EMI: This is the main function that holds the core of EntityManager.
+            -- Injects all the functions into the manager class and then returns the manager class.
 function EntityManagerInitialization(manager)
-    --[[
-        Manager ENTITY
-    ]]--
+    manager['initialized'] = false
+
+
+    --
+    -- ENTITY
+    --
     function manager.Entity(entity, player)
-        -- Functions
+
+        -- AbilityConfigure
         function entity.AbilityConfigure(ability)
             ability['name'] = ability['name'] or ability:GetAbilityName() or nil
 
@@ -131,15 +137,16 @@ function EntityManagerInitialization(manager)
         function entity.LocationRefresh()
             entity['location'] = entity:GetAbsOrigin() or {0, 0, 0}
             entity['loc'] = entity['location'] or {0, 0, 0}
-            entity['x'] = entity['origin']['x'] or 0
-            entity['y'] = entity['origin']['y'] or 0
-            entity['z'] = entity['origin']['z'] or 0
+            entity['x'] = entity['location']['x'] or 0
+            entity['y'] = entity['location']['y'] or 0
+            entity['z'] = entity['location']['z'] or 0
             return(entity['location'])
         end
 
-        function entity.SetHealth(amount)
-            if type(amount) ~= 'number' then
-                manager.Error('SetHealth only takes a number as the parameter.')
+        function entity.HealthSet(number)
+            amount = tonumber(number)
+            if not amount then
+                --manager.Error('SetHealth only takes a number as the parameter.')
                 return false
             end
 
@@ -369,6 +376,11 @@ function EntityManagerInitialization(manager)
         else
             return false
         end
+    end
+
+    function manager.Error(message)
+        print('EntityManager: '..tostring(message))
+        return
     end
 
 

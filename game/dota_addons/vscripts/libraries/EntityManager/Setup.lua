@@ -4,7 +4,7 @@ require('libraries/EntityManager/Manager')
 local manager = EntityManagerInitialization(class({}))
 
 -- Information about the library
-manager['version'] = 0.62
+manager['version'] = 0.63
 manager['url'] = 'https://github.com/CrAzD/DotaEntityManager'
 
 -- General setup and configuration
