@@ -1,9 +1,9 @@
 
 
--- EntityManagerInitialization(manager)
-    -- manager MUST be a class (class({}) for simply way of making a class)
-    -- EMI: This is the main function that holds the core of EntityManager.
-            -- Injects all the functions into the manager class and then returns the manager class.
+--EntityManagerInitialization
+    -- manager: class passed from setup.lua 
+    -- [[class({}) for a simple empty class]]
+    -- will return manager with functions injected to EntityManager global
 function EntityManagerInitialization(manager)
     manager['initialized'] = false
 
@@ -156,6 +156,60 @@ function EntityManagerInitialization(manager)
             entity:SetHealth(amount)
         end
 
+        -- Popup
+            -- Displays the amount of resource deposited to the depo (or self if self is a depo)
+            -- resource: string
+            -- amount: integer
+            -- color: vector -- rgb color code
+            -- particleFX: string -- location of the fx model
+            -- particleViewer: string -- player, team, all (who can view the popup)
+            -- attachLocation: Vector
+            -- attachTarget: table -- entity you want to attach the popup to
+            -- attachPlayer: table -- player who the popup belongs to
+        function entity.Popup(args)
+            local resource = args['resource'] or 'default'
+            local amount = args['amount'] or -123
+            local color = args['color'] or (manager['colors'] and manager['colors'][resource]) or Vector(255, 255, 255)
+            local particleFX = args['particleFX'] or 'particles/msg_fx/msg_damage_numbers_outgoing.vpcf'
+            local particleViewer = args['particleViewer'] or 'player'
+            local attachLocation = args['attachLocation'] or PATTACH_ABSORIGIN
+            local attachTarget = args['attachTarget'] or entity['depo'] or entity
+            local attachPlayer = args['attachPlayer'] or entity['owningPlayer']
+
+            local particle
+            if particleViewer == 'player' then
+                particle = ParticleManager:CreateParticleForPlayer(
+                    particleFX,
+                    attachLocation,
+                    attachTarget,
+                    attachPlayer
+                )
+            elseif particleViewer == 'team' then
+                particle = ParticleManager:CreateParticleForTeam(
+                    particleFX,
+                    attachLocation,
+                    attachTarget,
+                    (args['attachTeam'] or 2)
+                )
+            else
+                particle = ParticleManager:CreateParticle(
+                    particleFX,
+                    attachLocation,
+                    attachTarget
+                )
+            end
+
+            if not particle then
+                return
+            end
+
+            ParticleManager:SetParticleControl(particle, 1, Vector(0, amount, nil))
+            ParticleManager:SetParticleControl(particle, 2, Vector(4.0, (#tostring(amount)+1), 0))
+            ParticleManager:SetParticleControl(particle, 3, color)
+            return
+        end
+
+        --
         -- KV Variables
         local kvTable = manager['kv']['entities'][entity['name']] or nil
         if kvTable then
@@ -164,6 +218,7 @@ function EntityManagerInitialization(manager)
             end
         end
 
+        --
         -- General Variables
         entity['id'] = entity['id'] or entity:GetOwner():GetPlayerID() or nil
         entity['name'] = entity['name'] or entity:GetUnitName() or nil
@@ -217,9 +272,7 @@ function EntityManagerInitialization(manager)
             entity['type'] = 'hero'
         end
 
-        -- FindClearSpace and HullSize reset
-        entity:SetHullRadius(20)
-        FindClearSpaceForUnit(entity, entity['location'], true)
+        -- HullSize reset
         entity:SetHullRadius(entity['hullRadius'])
         entity:SetControllableByPlayer(entity['id'], true)
 
