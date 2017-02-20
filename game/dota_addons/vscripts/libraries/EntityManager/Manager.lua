@@ -10,10 +10,11 @@ function EntityManagerInitialization(manager)
 
     --
     -- ENTITY
-    --
     function manager.Entity(entity, player)
 
+        --
         -- AbilityConfigure
+            -- ability: table
         function entity.AbilityConfigure(ability)
             ability['name'] = ability['name'] or ability:GetAbilityName() or nil
 
@@ -29,10 +30,13 @@ function EntityManagerInitialization(manager)
 
             ability['startingLevel'] = ability['startingLevel'] or 0
             ability:SetLevel(ability['startingLevel'])
-            ability['cost'] = ability:GetGoldCost(-1) or ability['cost'] or  0
+            ability['cost'] = ability:GetGoldCost(-1) or ability['cost'] or 0
             return(ability)
         end
 
+        --
+        -- AbilityAdd
+            -- abilityName: string
         function entity.AbilityAdd(abilityName)
             if not type(abilityName) == 'string' then
                 manager.Error('\'abilityName\' parameter must be a string. It\'s currently a '..tostring(type(abilityName)))
@@ -69,6 +73,8 @@ function EntityManagerInitialization(manager)
             end
         end
 
+        -- AbilityRemove
+            -- ability: table
         function entity.AbilityRemove(ability)
             if not type(ability) == 'table' then
                 manager.Error('the ability parameter must be a table/object, not a '..tostring(type(ability))..'.')
@@ -90,6 +96,9 @@ function EntityManagerInitialization(manager)
             return true
         end
 
+        -- AbilityReplace
+            -- abilityOld: table
+            -- abilityNewL string
         function entity.AbilityReplace(abilityOld, abilityNew)
             if not type(abilityOld) == 'table' then
                 manager.Error('abilityOld parameter must be a table/object. It\'s currently a '..tostring(type(abilityOld)))
@@ -116,6 +125,8 @@ function EntityManagerInitialization(manager)
             return true
         end
 
+        --
+        -- AbilityListRefresh
         function entity.AbilityListRefresh()
             local listOld = entity['abilities']['list']
             entity['abilities']['list'] = {}
@@ -134,6 +145,8 @@ function EntityManagerInitialization(manager)
             return
         end
 
+        -- LocationRefresh
+            -- returns entities current location
         function entity.LocationRefresh()
             entity['location'] = entity:GetAbsOrigin() or {0, 0, 0}
             entity['loc'] = entity['location'] or {0, 0, 0}
@@ -143,10 +156,12 @@ function EntityManagerInitialization(manager)
             return(entity['location'])
         end
 
+        -- HealthSet
+            -- number: integer
         function entity.HealthSet(number)
             amount = tonumber(number)
             if not amount then
-                --manager.Error('SetHealth only takes a number as the parameter.')
+                manager.Error('SetHealth only takes a number as the parameter.')
                 return false
             end
 
@@ -239,14 +254,14 @@ function EntityManagerInitialization(manager)
 
         entity['orgin'] = entity['origin'] or entity:GetAbsOrigin() or {0, 0, 0}
         entity['location'] = entity['origin'] or {0, 0, 0}
-        entity['loc'] = entity['location'] or {0, 0, 0}
         entity['x'] = entity['origin']['x'] or 0
         entity['y'] = entity['origin']['y'] or 0
         entity['z'] = entity['origin']['z'] or 0
 
         entity['effects'] = {}
 
-        -- Initial ability setup & configuration
+        --
+        -- Ability configuration & initialization
         entity['abilities'] = {
             ['list'] = {},
             ['count'] = -1
@@ -266,16 +281,14 @@ function EntityManagerInitialization(manager)
             end
         end
 
-        -- Initial hero setup & configuration
+        --
+        -- Hero configuration (if entity is a hero)
         if entity['isHero'] then
             entity:SetAbilityPoints(entity['abilityPoints'])
             entity['type'] = 'hero'
         end
 
-        -- HullSize reset
-        entity:SetHullRadius(entity['hullRadius'])
-        entity:SetControllableByPlayer(entity['id'], true)
-
+        --
         -- Insert entity into owning player
         if player['entities'] then
             entity['positionInPlayerEntityList'] = player['positionInPlayerEntityList'] + 1
@@ -284,7 +297,10 @@ function EntityManagerInitialization(manager)
             manager.Error('Cannot add entity to owning player, verify player has been configured. \nIf this is a dummy unit use -123 as the id.')
         end
 
+        --
         -- Entity is configured, finishing touch(s)
+        entity:SetHullRadius(entity['hullRadius'])
+        entity:SetControllableByPlayer(entity['id'], true)
         entity['entityConfigured'] = true
         manager['indexed'][entity['index']] = entity
         FireGameEventLocal('em_entity_configured', {['index'] = entity['index']})
@@ -292,9 +308,8 @@ function EntityManagerInitialization(manager)
     end
 
 
-    --[[
-        Manager PLAYER
-    ]]--
+    --
+    -- PLAYER
     function manager.Player(player)
         -- General Variables
         player['id'] = player['id'] or player:GetPlayerID() or -123
@@ -318,9 +333,8 @@ function EntityManagerInitialization(manager)
     end
 
 
-    --[[
-        Manager CORE/FUNCTIONS
-    ]]--
+    --
+    -- MANAGER: Functions
     function manager.EntityCreate(entityData, player)
         if not type(entityData) == 'table' then
             manager.Error('entity parameter must be a table. It\'s currently a '..tostring(type(entity)..'.'))
@@ -437,9 +451,8 @@ function EntityManagerInitialization(manager)
     end
 
 
-    --[[
-        Manager EVENTS
-    ]]--
+    --
+    -- MANAGER: Events
     local function EventGameStateChange(data)
         if GameRules:State_Get() ~= DOTA_GAMERULES_STATE_HERO_SELECTION then
             return
@@ -475,10 +488,16 @@ function EntityManagerInitialization(manager)
     ListenToGameEvent('game_rules_state_change', EventGameStateChange, self)
     ListenToGameEvent('entity_killed', EventEntityKilled, self)
 
+    --
+    -- MANAGER: Configuration
+    manager['colors'] = {
+        ['default'] = Vector(0, 0 ,0),
+        ['lumber'] = Vector(10, 200, 90),
+        ['gold'] = Vector(225, 225, 100)
+    }
 
-    --[[
-        Final touch(s), then return the manager.
-    ]]--
+    --
+    -- Final touches and return manager
     manager['initialized'] = true
     FireGameEventLocal('em_manager_configured', {['name']='EntityManager'})
     return(manager)
