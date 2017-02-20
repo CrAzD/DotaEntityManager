@@ -1,10 +1,12 @@
 
 
+-- EntityManager
+-- By: CrAzD
 require('libraries/EntityManager/Manager')
 local manager = EntityManagerInitialization(class({}))
 
--- Information about the library
-manager['version'] = 0.63
+-- Information
+manager['version'] = 0.64
 manager['url'] = 'https://github.com/CrAzD/DotaEntityManager'
 
 -- General setup and configuration
@@ -23,7 +25,7 @@ manager['kv'] = {
     ['entities'] = {}
 }
 local kvTables = {['units'] = 'units', ['heroes'] = 'heroes'}
-for _, kvTable in pairs(kvTables) do
+for _, kvTable in pairs({['units'] = 'units', ['heroes'] = 'heroes'}) do
     for key, value in pairs(manager['kv'][kvTable]) do
         manager['kv']['entities'][key] = value or nil
     end
